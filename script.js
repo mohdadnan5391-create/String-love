@@ -58,7 +58,17 @@ class Particle{
 
     update(){
 
-        if(this.p
+    if(this.pinned) return;
+
+    let vx = (this.x - this.oldx) * CONFIG.damping;
+    let vy = (this.y - this.oldy) * CONFIG.damping;
+
+    this.oldx = this.x;
+    this.oldy = this.y;
+
+    this.x += vx;
+    this.y += vy + CONFIG.gravity;
+    }
            class Constraint {
 
     constructor(a,b,length){

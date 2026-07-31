@@ -160,3 +160,64 @@ function createCloth(){
 }
 
 createCloth();
+        function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = "bold 18px monospace";
+    ctx.fillStyle = "#fc0843";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    for (const p of particles) {
+        ctx.fillText(p.char, p.x, p.y);
+    }
+}
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    for (const p of particles) {
+        p.update();
+    }
+
+    for (let i = 0; i < CONFIG.iterations; i++) {
+        for (const c of constraints) {
+            c.solve();
+        }
+    }
+
+    draw();
+}
+
+let dragging = null;
+
+canvas.addEventListener("pointerdown", e => {
+
+    let best = null;
+    let bestDist = 25;
+
+    for (const p of particles) {
+
+        const dx = p.x - e.clientX;
+        const dy = p.y - e.clientY;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < bestDist) {
+            best = p;
+            bestDist = d;
+        }
+    }
+
+    dragging = best;
+});
+
+canvas.addEventListener("pointermove", e => {
+
+    if (!dragging) return;
+
+    dragging.x = e.clientX;
+    dragging.y = e.clientY;
+});
+
+window.addEventListener("pointerup", () => {

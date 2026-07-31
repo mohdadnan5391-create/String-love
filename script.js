@@ -59,3 +59,104 @@ class Particle{
     update(){
 
         if(this.p
+           class Constraint {
+
+    constructor(a,b,length){
+        this.a=a;
+        this.b=b;
+        this.length=length;
+    }
+
+    solve(){
+
+        let dx=this.b.x-this.a.x;
+        let dy=this.b.y-this.a.y;
+
+        let dist=Math.sqrt(dx*dx+dy*dy);
+
+        if(dist===0) return;
+
+        let diff=(dist-this.length)/dist;
+
+        let ox=dx*0.5*diff;
+        let oy=dy*0.5*diff;
+
+        if(!this.a.pinned){
+            this.a.x+=ox;
+            this.a.y+=oy;
+        }
+
+        if(!this.b.pinned){
+            this.b.x-=ox;
+            this.b.y-=oy;
+        }
+
+    }
+
+}
+
+function createCloth(){
+
+    const startX=(window.innerWidth-(CONFIG.cols-1)*CONFIG.spacing)/2;
+    const startY=80;
+
+    let index=0;
+
+    for(let y=0;y<CONFIG.rows;y++){
+
+        for(let x=0;x<CONFIG.cols;x++){
+
+            const ch=TEXT[index%TEXT.length];
+
+            const p=new Particle(
+                startX+x*CONFIG.spacing,
+                startY+y*CONFIG.spacing,
+                ch,
+                y===0
+            );
+
+            particles.push(p);
+
+            index++;
+
+        }
+
+    }
+
+    for(let y=0;y<CONFIG.rows;y++){
+
+        for(let x=0;x<CONFIG.cols;x++){
+
+            const id=y*CONFIG.cols+x;
+
+            if(x<CONFIG.cols-1){
+
+                constraints.push(
+                    new Constraint(
+                        particles[id],
+                        particles[id+1],
+                        CONFIG.spacing
+                    )
+                );
+
+            }
+
+            if(y<CONFIG.rows-1){
+
+                constraints.push(
+                    new Constraint(
+                        particles[id],
+                        particles[id+CONFIG.cols],
+                        CONFIG.spacing
+                    )
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+createCloth();

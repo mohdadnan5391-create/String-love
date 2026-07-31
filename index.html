@@ -1,20 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Strings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Strings</title>
 
-    <link rel="stylesheet" href="style.css">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#eeebcf;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:monospace;
+}
+
+canvas{
+display:block;
+}
+</style>
 </head>
-
 <body>
 
-<div id="container">
-    <canvas id="canvas"></canvas>
-</div>
+<canvas id="c"></canvas>
 
-<script src="script.js"></script>
+<script>
 
-</body>
-</html>
+const canvas=document.getElementById("c");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+const letters=[];
+const text="I Love You Arfa babu ";
+
+for(let y=80;y<canvas.height-50;y+=22){
+
+for(let x=80;x<canvas.width-80;x+=18){
+
+letters.push({
+x,
+y,
+ox:x,
+oy:y,
+char:text[(x+y)%text.length]
+});
+
+}
+
+}
+
+let mouse={x:-9999,y:-9999};
+
+canvas.onmousemove=e=>{
+mouse.x=e.clientX;
+mouse.y=e.clientY;
+};
+
+canvas.onmouseleave=()=>{
+mouse.x=-9999;
+mouse.y=-9999;
+};
+
+function animate(){
+
+requestAnimationFrame(animate);
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.font="bold 18px monospace";
+ctx.fillStyle="#fc0843";
+
+for(const p of letters){
+
+let dx=p.x-mouse.x;
+let dy=p.y-mouse.y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<100){
+
+let force=(100-dist)/100;
+
+p.x+=dx*0.08*force;
+p.y+=dy*0.08*force;
+
+}
+
+p.x+=(p.ox-p.x)*0.05;
+p.y+=(p

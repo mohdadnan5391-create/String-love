@@ -221,3 +221,7 @@ canvas.addEventListener("pointermove", e => {
 });
 
 window.addEventListener("pointerup", () => {
+    dragging = null;
+});
+
+animate();
